@@ -9,6 +9,7 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script type="text/javascript" src="/socketiojs"></script>
 	<script type="text/javascript">
+    var User_Info={name:'Unknow'};
     $(document).ready(function () {
         var Message_Windows = $("#msg_wrap");
         var socket = io.connect('https://home.thestargazer.net');
@@ -27,9 +28,17 @@
             Message_Windows.prepend(new Date().toString() + '<span>' + message + '</span><br>');
         });
 
+        socket.on('Your Name',function(Name){
+            User_Info.name=Name;
+            $('#User_Name').text(Name);
+        });
+        socket.on('Chat_User_List',function(list){
+            
+            $('#User_List_Wrap').text(list);
+        });
         $("#sent").click(function () {
 
-            socket.emit("Chat_Public", "Guest", $("#msgbox").val());
+            socket.emit("Chat_Public",User_Info.name, $("#msgbox").val());
         })
 
     })
@@ -39,11 +48,22 @@
 	</script>
 	
 	<style type="text/css">
-
+        #User_List_Wrap{
+            float:right;
+            width: 300px;
+        }
+        #msg_wrap{
+            float:left;
+            width: 600px;
+        }
 	</style>
 </head>
 <body>
-	<input type="test" id="msgbox" style="width:200dx;"/><input  type="button" id="sent"/>
+    <div id="Info_Wrap">
+    <span id="User_Name">Unknow</span>
+    </div>
+	<input type="test" id="msgbox" style="width:200dx;"/><input  type="button" id="sent" value="Send"/>
     <div id="msg_wrap"></div>
+    <div id="User_List_Wrap"></div>
 </body>
 </html>

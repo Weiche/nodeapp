@@ -101,7 +101,13 @@ var Chat_User_List = new Object();
 var Count = 0;
 Chat_User_List.Members = [];
 Chat_User_List.Num = 1;
-
+Chat_User_List.get_List=function (){
+    var namelist=[];
+    for (var key in Chat_User_List.Members) {
+        namelist.push(key);
+    }
+    return namelist;    
+}
 io.sockets.on('connection', function (socket) {
 
     socket.broadcast.emit('message', 'Broadcast.emit is for everyone eccept himself');
@@ -127,7 +133,10 @@ io.sockets.on('connection', function (socket) {
 
         }
         Chat_User_List.Members[username] = new Chat_Member(io.sockets.socket(socket.id), username);
+        
+        Chat_User_List.Members[username].socket.emit('Your Name',Chat_User_List.Members[username].name);
         io.sockets.emit('Chat_Public', username + " Enter the room");
+        io.sockets.emit('Chat_User_List',Chat_User_List.get_List());
     });
     socket.on('Chat_Public', function (user, text) {
         io.sockets.emit('Chat_Public', user + ': ' + text);
@@ -135,9 +144,9 @@ io.sockets.on('connection', function (socket) {
     socket.on('Chat_Private', function (user, target, text) {
         io.sockets.socket(target).emit('Chat_Public', user + ' wisp to you:' + text);
     });
-    socket.on('Chat_User_List', function () {
-
-    });
+    
+        
+    
     socket.on('Req_GPIO_Readall', function () {
         console.log('GPIO_Info requested');
         exec("gpio readall", function (err, stdout, stderr) {
