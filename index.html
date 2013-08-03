@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta http-equiv="X-UA-Compatible" content="chrome=1; IE=8; IE=edge" />
+ 
+	<title>node.js / socket.io SSL&#25509;&#32154;&#12469;&#12531;&#12503;&#12523;</title>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+    $(document).ready(function(){
+			var socket = io.connect('https://home.thestargazer.net');
+            var Message_Windows=$("#msg_wrap");
+            var CPU_Info_Container=$("#CPU_Info_Wrap")
+
+			socket.on('connect', function () {
+				Message_Windows.prepend( new Date().toString() + '<span>接続できたぞ</span><br>');
+			});
+			
+
+			socket.on('message', function(message) {
+			 
+				Message_Windows.prepend(new Date().toString() + '<span>' + message + '</span><br>' );
+			}); 
+            socket.on('system info',function(cpu_info){
+                CPU_Info_Container.text(cpu_info);
+                //Message_Windows.prepend('<span>' + cpu_info + '</span><br>');
+            });
+            $("#sent").click(function(){
+                
+                socket.emit("private message","Guest",$("#msgbox").val());
+            })
+        
+    })
+
+
+
+	</script>
+	
+	<style type="text/css">
+		body {
+			background-color: black;
+			font-size       : 12px;
+			color           : gray;
+			line-height     : 40px; }
+			
+			body > span {
+				color       : lightgray;
+				font-size   : 24px;
+				margin-left : 10px; }
+			
+			body > span:first-child {
+				color       : #feb2ad; }
+			
+	</style>
+</head>
+<body>
+<div id="CPU_Info_Wrap">
+
+</div>
+	<input type="test" id="msgbox" style="width:200dx;"/><input  type="button" id="sent"/>
+    <div id="msg_wrap"></div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        
+        $(document).ready(function(){
+            var GPIO_Status_Wrap=$("#GPIO_Status_Wrap");
+            var socket = io.connect('https://home.thestargazer.net');
+            socket.on("connect",function(){
+                GPIO_Status_Wrap.text("Connection Established");
+                
+            });
+            socket.on("Res_GPIO_Readall",function(GPIO_Info){
+                GPIO_Status_Wrap.html(GPIO_Info.replace(/\n/g,'<br/>'));
+                
+            });
+            var Renew_GPIO_Status=function(){
+            socket.emit("Req_GPIO_Readall");
+            }
+            Renew_GPIO_Status();
+            $("#Fan_fullspeed_button").click(function(){
+                socket.emit("Req_Fan_fullspeed");
+                Renew_GPIO_Status();
+            })
+            $("#Fan_off_button").click(function(){
+                socket.emit("Req_Fan_off");
+                Renew_GPIO_Status();
+            })
+        })
+    </script>
+</head>
+<body>
+<input id="Fan_fullspeed_button" type="button" value="Fan FullSpeed"/>
+<input id="Fan_off_button" type="button" value="Fan Off"/>
+<div id="GPIO_Status_Wrap">
+Connecting...
+</div>
+</body>
+</html>
