@@ -24,6 +24,10 @@
 			 
 				Message_Windows.prepend(new Date().toString() + '<span>' + message + '</span><br>' );
 			}); 
+			socket.on('*', function(message) {
+			 
+				Message_Windows.prepend(new Date().toString() + '<span>' + message + '</span><br>' );
+			}); 
             socket.on('system info',function(cpu_info){
                 CPU_Info_Container.text(cpu_info);
                 //Message_Windows.prepend('<span>' + cpu_info + '</span><br>');
